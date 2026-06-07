@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sei Mesi · per Corinne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Pinyon+Script&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ===========================================================
+     PERSONALIZZA QUI ↓↓↓
+     1) La data del vostro primo giorno insieme (anno-mese-giorno e ora)
+     =========================================================== */
+  /* (la data si cambia più in basso, nello <script>, è segnalata) */
+
+  :root{
+    --wine-deep:#160810;
+    --wine:#2a1320;
+    --wine-soft:#3a1c2b;
+    --cream:#f6ece1;
+    --cream-dim:#cdb9ad;
+    --blush:#e6a3a8;
+    --rose:#d9818c;
+    --gold:#e0c178;
+    --gold-soft:#caa75e;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--wine-deep);
+    color:var(--cream);
+    font-family:'Outfit',sans-serif;
+    font-weight:300;
+    overflow-x:hidden;
+    line-height:1.7;
+  }
+
+  /* grana sottile su tutto */
+  body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:9999;
+    opacity:.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* orbite luminose di sfondo */
+  .glow{
+    position:fixed;
+    border-radius:50%;
+    filter:blur(90px);
+    z-index:0;
+    pointer-events:none;
+  }
+  .glow.g1{width:55vw;height:55vw;top:-15vw;left:-10vw;background:radial-gradient(circle,rgba(217,129,140,.35),transparent 70%);}
+  .glow.g2{width:45vw;height:45vw;bottom:-10vw;right:-12vw;background:radial-gradient(circle,rgba(224,193,120,.22),transparent 70%);}
+  .glow.g3{width:40vw;height:40vw;top:40%;left:50%;transform:translateX(-50%);background:radial-gradient(circle,rgba(230,163,168,.18),transparent 70%);}
+
+  /* ====== INTRO OVERLAY ====== */
+  #intro{
+    position:fixed;inset:0;z-index:1000;
+    background:linear-gradient(160deg,var(--wine-deep),var(--wine));
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:2rem;
+    transition:opacity 1.2s ease, visibility 1.2s ease;
+  }
+  #intro.hidden{opacity:0;visibility:hidden;}
+  #intro .pre{
+    font-size:.8rem;letter-spacing:.5em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:1.5rem;opacity:0;
+    animation:fadeUp 1.2s .3s forwards;
+  }
+  #intro .names{
+    font-family:'Pinyon Script',cursive;
+    font-size:clamp(3.5rem,11vw,8rem);
+    line-height:1;color:var(--cream);
+    opacity:0;animation:fadeUp 1.4s .7s forwards;
+  }
+  #intro .names span{color:var(--blush);}
+  #enterBtn{
+    margin-top:3rem;padding:1rem 3rem;
+    background:transparent;border:1px solid var(--gold-soft);
+    color:var(--cream);font-family:'Outfit';font-weight:300;
+    letter-spacing:.3em;text-transform:uppercase;font-size:.75rem;
+    border-radius:999px;cursor:pointer;
+    opacity:0;animation:fadeUp 1.2s 1.4s forwards;
+    transition:background .5s,color .5s,transform .4s;
+  }
+  #enterBtn:hover{background:var(--gold);color:var(--wine-deep);transform:translateY(-3px);}
+
+  /* ====== CONTENUTO ====== */
+  main{position:relative;z-index:2;}
+
+  section{padding:7rem 1.5rem;max-width:1000px;margin:0 auto;}
+
+  .reveal{opacity:0;transform:translateY(40px);transition:opacity 1.1s ease,transform 1.1s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  /* HERO */
+  .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:4rem;}
+  .hero .kicker{font-size:.78rem;letter-spacing:.55em;text-transform:uppercase;color:var(--gold);margin-bottom:2rem;}
+  .hero h1{
+    font-family:'Cormorant Garamond',serif;font-weight:300;
+    font-size:clamp(2.6rem,7vw,5.5rem);line-height:1.05;letter-spacing:-.01em;
+  }
+  .hero h1 em{font-style:italic;color:var(--blush);}
+  .hero .script{
+    font-family:'Pinyon Script',cursive;
+    font-size:clamp(3rem,9vw,6.5rem);color:var(--cream);
+    margin:.5rem 0 0;line-height:1;
+  }
+  .hero .sub{margin-top:2.5rem;color:var(--cream-dim);max-width:30rem;font-size:1.05rem;}
+  .scroll-hint{margin-top:4rem;font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--cream-dim);animation:bob 2.4s ease-in-out infinite;}
+
+  /* COUNTER */
+  .counter-sec{text-align:center;}
+  .counter-sec .label{font-size:.78rem;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem;}
+  .counter-sec h2{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(2rem,5vw,3.4rem);margin-bottom:3.5rem;}
+  .counter-sec h2 em{font-style:italic;color:var(--blush);}
+  .clock{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;}
+  .unit{
+    background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.01));
+    border:1px solid rgba(224,193,120,.18);
+    border-radius:18px;padding:1.8rem 1.2rem;min-width:120px;flex:1;max-width:170px;
+    backdrop-filter:blur(6px);
+  }
+  .unit .num{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,6vw,3.6rem);font-weight:400;color:var(--cream);line-height:1;}
+  .unit .uname{font-size:.68rem;letter-spacing:.35em;text-transform:uppercase;color:var(--cream-dim);margin-top:.7rem;}
+
+  /* LETTER */
+  .letter{text-align:center;}
+  .letter .label{font-size:.78rem;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;}
+  .letter p{
+    font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;
+    font-size:clamp(1.5rem,3.6vw,2.3rem);line-height:1.55;color:var(--cream);
+    max-width:42rem;margin:0 auto;
+  }
+  .letter .sign{font-family:'Pinyon Script',cursive;font-size:clamp(2.2rem,5vw,3.2rem);color:var(--blush);margin-top:2.5rem;}
+
+  /* REASONS */
+  .reasons .label{text-align:center;font-size:.78rem;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
+  .reasons h2{text-align:center;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(2rem,5vw,3rem);margin-bottom:3.5rem;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;}
+  .card{
+    border:1px solid rgba(230,163,168,.18);border-radius:18px;padding:2rem 1.8rem;
+    background:linear-gradient(160deg,rgba(255,255,255,.04),rgba(255,255,255,.01));
+    transition:transform .5s,border-color .5s,background .5s;
+  }
+  .card:hover{transform:translateY(-6px);border-color:var(--gold-soft);background:linear-gradient(160deg,rgba(224,193,120,.08),rgba(255,255,255,.01));}
+  .card .n{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.3rem;color:var(--gold);margin-bottom:.8rem;}
+  .card p{color:var(--cream-dim);font-size:1rem;}
+
+  /* FINALE */
+  .finale{text-align:center;padding-bottom:9rem;}
+  .finale h2{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(2.2rem,6vw,4rem);line-height:1.1;}
+  .finale h2 em{font-style:italic;color:var(--blush);}
+  .finale .date{margin-top:2rem;font-size:.78rem;letter-spacing:.4em;text-transform:uppercase;color:var(--cream-dim);}
+  .heart-btn{
+    margin-top:3rem;background:none;border:none;cursor:pointer;
+    font-size:2.4rem;transition:transform .3s;color:var(--rose);
+  }
+  .heart-btn:hover{transform:scale(1.25);}
+
+  footer{text-align:center;padding:2rem;font-size:.7rem;letter-spacing:.2em;color:rgba(205,185,173,.4);}
+
+  /* CUORI CHE SALGONO */
+  .floating-heart{position:fixed;bottom:-40px;z-index:1;pointer-events:none;color:var(--rose);opacity:0;animation:rise linear forwards;}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(25px);}to{opacity:1;transform:none;}}
+  @keyframes bob{0%,100%{transform:translateY(0);opacity:.6;}50%{transform:translateY(8px);opacity:1;}}
+  @keyframes rise{
+    0%{transform:translateY(0) translateX(0) rotate(0);opacity:0;}
+    10%{opacity:.8;}
+    90%{opacity:.8;}
+    100%{transform:translateY(-110vh) translateX(var(--drift)) rotate(360deg);opacity:0;}
+  }
+
+  /* ====== NUOVE ANIMAZIONI ====== */
+
+  /* shimmer dorato sui nomi/corsivi */
+  .shimmer{
+    background:linear-gradient(100deg,var(--cream) 20%,var(--gold) 40%,var(--blush) 55%,var(--cream) 75%);
+    background-size:220% auto;
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    animation:shimmer 5s linear infinite;
+  }
+  @keyframes shimmer{to{background-position:-220% center;}}
+
+  /* stelline che brillano */
+  .star{position:fixed;z-index:1;pointer-events:none;background:var(--cream);border-radius:50%;animation:twinkle ease-in-out infinite;}
+  @keyframes twinkle{0%,100%{opacity:0;transform:scale(.5);}50%{opacity:.9;transform:scale(1);}}
+
+  /* respiro delle orbite di sfondo */
+  .glow.g1{animation:drift1 16s ease-in-out infinite;}
+  .glow.g2{animation:drift2 20s ease-in-out infinite;}
+  .glow.g3{animation:drift3 14s ease-in-out infinite;}
+  @keyframes drift1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(4vw,3vw) scale(1.12);}}
+  @keyframes drift2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-3vw,-2vw) scale(1.15);}}
+  @keyframes drift3{0%,100%{transform:translateX(-50%) scale(1);}50%{transform:translateX(-50%) scale(1.18);}}
+
+  /* respiro dei riquadri del contatore */
+  .unit{animation:breathe 4s ease-in-out infinite;}
+  .unit:nth-child(2){animation-delay:.4s;}
+  .unit:nth-child(3){animation-delay:.8s;}
+  .unit:nth-child(4){animation-delay:1.2s;}
+  @keyframes breathe{0%,100%{box-shadow:0 0 0 rgba(224,193,120,0);}50%{box-shadow:0 0 28px rgba(224,193,120,.12);}}
+
+  /* numero del contatore che "batte" al cambio */
+  .num.beat{animation:numbeat .5s ease;}
+  @keyframes numbeat{0%{transform:scale(1);}40%{transform:scale(1.18);color:var(--blush);}100%{transform:scale(1);}}
+
+  /* ====== SEZIONE CUORE GENERATO ====== */
+  .heart-sec{text-align:center;}
+  .heart-sec .label{font-size:.78rem;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:2.5rem;}
+  .heart-stage{position:relative;display:inline-block;}
+  .draw-heart{width:clamp(150px,30vw,240px);height:auto;overflow:visible;cursor:pointer;}
+  .draw-heart path{
+    fill:rgba(217,129,140,0);
+    stroke:var(--gold);stroke-width:.8;
+    filter:drop-shadow(0 0 10px rgba(224,193,120,.5));
+    transition:fill 1.4s ease 1.6s;
+  }
+  .draw-heart.drawn path{
+    fill:url(#heartGrad);
+    animation:heartbeat 1.6s ease-in-out 2.6s infinite;
+    transform-origin:center;transform-box:fill-box;
+  }
+  @keyframes heartbeat{0%,100%{transform:scale(1);}15%{transform:scale(1.12);}30%{transform:scale(1);}45%{transform:scale(1.08);}60%{transform:scale(1);}}
+  .heart-stage .cap{
+    font-family:'Pinyon Script',cursive;font-size:clamp(1.6rem,4vw,2.4rem);
+    color:var(--cream);margin-top:1.5rem;opacity:0;transition:opacity 1.2s ease 2.4s;
+  }
+  .draw-heart.drawn ~ .cap{opacity:1;}
+
+  /* ping al click */
+  .ping{position:fixed;z-index:5;pointer-events:none;color:var(--rose);animation:ping .9s ease-out forwards;}
+  @keyframes ping{0%{transform:scale(.4);opacity:1;}100%{transform:scale(1.8) translateY(-30px);opacity:0;}}
+
+  @media(max-width:600px){
+    section{padding:5rem 1.2rem;}
+    .unit{min-width:42%;}
+  }
+</style>
+</head>
+<body>
+
+<div class="glow g1"></div>
+<div class="glow g2"></div>
+<div class="glow g3"></div>
+
+<!-- INTRO -->
+<div id="intro">
+  <div class="pre">sei mesi insieme</div>
+  <div class="names shimmer">Christian <span>&amp;</span> Corinne</div>
+  <button id="enterBtn">apri il regalo</button>
+</div>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="kicker reveal">07.12.2025 — 07.06.2026</div>
+    <h1 class="reveal">Da sei mesi<br>la mia parte <em>preferita</em></h1>
+    <div class="script shimmer reveal">della giornata</div>
+    <p class="sub reveal">Centottanta giorni fa è iniziata la cosa più bella che mi sia capitata. Questo piccolo angolo di internet è solo per te.</p>
+    <div class="scroll-hint reveal">scorri ↓</div>
+  </section>
+
+  <!-- COUNTER -->
+  <section class="counter-sec">
+    <div class="label reveal">il tempo con te</div>
+    <h2 class="reveal">Stiamo insieme da <em>esattamente</em></h2>
+    <div class="clock reveal">
+      <div class="unit"><div class="num" id="d">0</div><div class="uname">giorni</div></div>
+      <div class="unit"><div class="num" id="h">0</div><div class="uname">ore</div></div>
+      <div class="unit"><div class="num" id="m">0</div><div class="uname">minuti</div></div>
+      <div class="unit"><div class="num" id="s">0</div><div class="uname">secondi</div></div>
+    </div>
+  </section>
+
+  <!-- LETTERA -->
+  <section class="letter">
+    <div class="label reveal">una cosa che voglio dirti</div>
+    <p class="reveal">In questi sei mesi mi hai cambiato senza nemmeno provarci. Mi piace come ridi, come ti arrabbi per le cose stupide, come dici il mio nome. Spero solo che il prossimo conto sia molto più lungo di così.</p>
+    <div class="sign reveal">per sempre tuo, Christian</div>
+  </section>
+
+  <!-- MOTIVI -->
+  <section class="reasons">
+    <div class="label reveal">sei mesi in cui ho imparato che</div>
+    <h2 class="reveal">Corinne è...</h2>
+    <div class="grid">
+      <div class="card reveal"><div class="n">i.</div><p>La persona che mi fa ridere anche quando la giornata fa schifo.</p></div>
+      <div class="card reveal"><div class="n">ii.</div><p>Il posto in cui mi sento a casa, ovunque siamo.</p></div>
+      <div class="card reveal"><div class="n">iii.</div><p>La prova che le cose belle, a volte, capitano davvero.</p></div>
+      <div class="card reveal"><div class="n">iv.</div><p>Il motivo per cui sorrido al telefono come uno scemo.</p></div>
+    </div>
+  </section>
+
+  <!-- CUORE GENERATO -->
+  <section class="heart-sec">
+    <div class="label reveal">e alla fine resta solo questo</div>
+    <div class="heart-stage reveal">
+      <svg class="draw-heart" id="drawHeart" viewBox="0 0 32 29.6">
+        <defs>
+          <linearGradient id="heartGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#e6a3a8"/>
+            <stop offset="100%" stop-color="#d9818c"/>
+          </linearGradient>
+        </defs>
+        <path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4 c0,9.4,9.5,11.9,16,21.2c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
+      </svg>
+      <div class="cap">il nostro</div>
+    </div>
+  </section>
+
+  <!-- FINALE -->
+  <section class="finale">
+    <h2 class="reveal">Buon mesiversario,<br><em>amore mio.</em></h2>
+    <div class="date reveal">sei mesi · e questo è solo l'inizio</div>
+    <button class="heart-btn reveal" id="rain">♥</button>
+  </section>
+
+  <footer>fatto con il cuore · per Corinne</footer>
+</main>
+
+<script>
+  /* ===========================================================
+     ⬇⬇⬇  CAMBIA QUI LA DATA DEL VOSTRO PRIMO GIORNO  ⬇⬇⬇
+     Formato: 'ANNO-MESE-GIORNOTORA:MINUTI:00'
+     Esempio: 7 dicembre 2025 alle 20:30 → '2025-12-07T20:30:00'
+     =========================================================== */
+  const startDate = new Date('2025-12-07T20:00:00');
+  /* ⬆⬆⬆  ------------------------------------------------  ⬆⬆⬆ */
+
+  // INTRO
+  const intro = document.getElementById('intro');
+  document.getElementById('enterBtn').addEventListener('click', () => {
+    intro.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    burstHearts(18);
+  });
+
+  // CONTATORE LIVE
+  function pad(n){ return String(n).padStart(2,'0'); }
+  let prev = {};
+  function setNum(id,val){
+    const el = document.getElementById(id);
+    if(el.textContent !== String(val)){
+      el.textContent = val;
+      el.classList.remove('beat'); void el.offsetWidth; el.classList.add('beat');
+    }
+  }
+  function tick(){
+    const now = new Date();
+    let diff = Math.floor((now - startDate)/1000);
+    if(diff < 0) diff = 0;
+    const days = Math.floor(diff/86400);
+    const hours = Math.floor((diff%86400)/3600);
+    const mins = Math.floor((diff%3600)/60);
+    const secs = diff%60;
+    setNum('d', days);
+    setNum('h', pad(hours));
+    setNum('m', pad(mins));
+    setNum('s', pad(secs));
+  }
+  tick(); setInterval(tick,1000);
+
+  // CUORE CHE SI DISEGNA
+  const heartSvg = document.getElementById('drawHeart');
+  const heartPath = heartSvg.querySelector('path');
+  const len = heartPath.getTotalLength();
+  heartPath.style.strokeDasharray = len;
+  heartPath.style.strokeDashoffset = len;
+  function drawHeartNow(){
+    heartPath.style.transition = 'stroke-dashoffset 2.2s ease';
+    heartPath.style.strokeDashoffset = '0';
+    setTimeout(()=> heartSvg.classList.add('drawn'), 2200);
+  }
+  const heartIO = new IntersectionObserver((es)=>{
+    es.forEach(e=>{ if(e.isIntersecting){ drawHeartNow(); heartIO.unobserve(e.target); } });
+  },{threshold:.4});
+  heartIO.observe(heartSvg);
+  // ri-disegna al click
+  heartSvg.addEventListener('click', ()=>{
+    heartSvg.classList.remove('drawn');
+    heartPath.style.transition = 'none';
+    heartPath.style.strokeDashoffset = len;
+    void heartPath.offsetWidth;
+    drawHeartNow();
+    burstHearts(20);
+  });
+
+  // STELLINE CHE BRILLANO
+  function makeStars(n){
+    for(let i=0;i<n;i++){
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = 1 + Math.random()*2.5;
+      s.style.width = s.style.height = size+'px';
+      s.style.left = Math.random()*100+'vw';
+      s.style.top = Math.random()*100+'vh';
+      s.style.animationDuration = (2.5 + Math.random()*4)+'s';
+      s.style.animationDelay = (Math.random()*5)+'s';
+      document.body.appendChild(s);
+    }
+  }
+  makeStars(60);
+
+  // CUORE DOVE CLICCHI
+  document.addEventListener('click', (e)=>{
+    if(e.target.closest('#enterBtn, #rain, #drawHeart')) return;
+    const p = document.createElement('div');
+    p.className = 'ping';
+    p.textContent = '♥';
+    p.style.left = e.clientX+'px';
+    p.style.top = e.clientY+'px';
+    p.style.fontSize = (16+Math.random()*14)+'px';
+    document.body.appendChild(p);
+    setTimeout(()=> p.remove(), 900);
+  });
+
+  // REVEAL ON SCROLL
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach((e,i)=>{
+      if(e.isIntersecting){
+        setTimeout(()=> e.target.classList.add('in'), i*90);
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // CUORI VOLANTI
+  function spawnHeart(){
+    const h = document.createElement('div');
+    h.className = 'floating-heart';
+    h.textContent = '♥';
+    h.style.left = Math.random()*100 + 'vw';
+    h.style.fontSize = (12 + Math.random()*22) + 'px';
+    h.style.setProperty('--drift', (Math.random()*120-60)+'px');
+    h.style.animationDuration = (7 + Math.random()*7) + 's';
+    h.style.opacity = .3 + Math.random()*.5;
+    document.body.appendChild(h);
+    setTimeout(()=> h.remove(), 14000);
+  }
+  function burstHearts(n){ for(let i=0;i<n;i++) setTimeout(spawnHeart, i*120); }
+  setInterval(spawnHeart, 1400); // pioggia leggera costante
+  document.getElementById('rain').addEventListener('click', ()=> burstHearts(40));
+
+  // blocca scroll finché non si apre
+  document.body.style.overflow = 'hidden';
+</script>
+</body>
+</html>
